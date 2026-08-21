@@ -1,4 +1,4 @@
-import { app } from './app';
+import { app } from './index';
 import dotenv from 'dotenv';
 import redis from './config/redis';
 import prisma from './database/prisma';
