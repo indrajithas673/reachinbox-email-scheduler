@@ -32,15 +32,17 @@ const redisStore = new RedisStore({
   prefix: 'session:',
 });
 
+const isProd = appConfig.frontendUrl.includes('vercel') || process.env.NODE_ENV?.trim() === 'production';
+
 app.use(session({
   store: redisStore,
   secret: appConfig.sessionSecret,
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: isProd,
     httpOnly: true,
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    sameSite: isProd ? 'none' : 'lax',
     maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
   }
 }));
