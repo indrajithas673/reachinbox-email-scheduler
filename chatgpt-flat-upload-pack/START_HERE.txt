@@ -1,0 +1,27 @@
+# ChatGPT / AI Upload Instructions
+
+Follow this exact order to upload files into the AI context for analysis or interview preparation:
+
+## 1. Upload Order
+1. `README.md` (Project overview)
+2. `backend_schema.prisma` (Database persistence model)
+3. `backend_coordination.ts` (Redis Lua distributed rate limiter)
+4. `backend_worker.ts` (BullMQ consumer, crash recovery logic, idempotency)
+5. `backend_scheduling.ts` (BullMQ publisher logic)
+6. `backend_email_routes.ts` (Express API for scheduling & tracking)
+7. `backend_auth_routes.ts` & `backend_entry.ts` (Google OAuth & server setup)
+8. `frontend_compose.tsx` (React frontend for CSV parsing and deduplication)
+9. `docker-compose.yml` (Infrastructure)
+10. `exclusion_notes.txt` (Why other files are missing)
+
+## 2. Copy and Paste this Prompt:
+```
+I have uploaded a flattened pack of core files from my recent full-stack project: the "ReachInbox Email Scheduler." 
+
+I need you to act as an expert technical interviewer and mentor. 
+Review the architecture (Express, BullMQ, Redis Lua, Prisma, React) and the provided code. 
+
+Please:
+1. Summarize your understanding of the architecture, focusing specifically on how crash recovery, atomic rate limiting, and the "no cron" requirements were handled.
+2. Ask me 3 challenging technical interview questions based *only* on the implementation details shown in this code. Act like a senior engineer drilling into edge cases.
+```

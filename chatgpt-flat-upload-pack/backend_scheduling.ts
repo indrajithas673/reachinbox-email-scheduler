@@ -15,7 +15,7 @@ export class SchedulingService {
       throw new Error(`EmailJob with id ${emailJobId} not found.`);
     }
 
-    if (emailJob.status !== 'SCHEDULED' && emailJob.status !== 'DELAYED_RATE_LIMIT') {
+    if (emailJob.status !== 'SCHEDULED') {
       throw new Error(`EmailJob ${emailJobId} cannot be scheduled because its status is ${emailJob.status}.`);
     }
 

@@ -22,6 +22,23 @@ router.get(
   }
 );
 
+// TEMPORARY DEV LOGIN
+router.get('/dev-login', async (req, res) => {
+  const user = await prisma.user.upsert({
+    where: { email: 'dev@example.com' },
+    update: {},
+    create: {
+      googleId: 'dev-google-id',
+      name: 'Dev User',
+      email: 'dev@example.com',
+      avatarUrl: 'https://ui-avatars.com/api/?name=Dev+User'
+    }
+  });
+  req.login({ id: user.id }, (err) => {
+    if (err) return res.status(500).send(err);
+    res.redirect(`${appConfig.frontendUrl}/dashboard`);
+  });
+});
 
 // Get currently authenticated user
 router.get('/me', requireAuth, async (req, res) => {
