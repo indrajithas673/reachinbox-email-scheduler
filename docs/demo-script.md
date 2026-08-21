@@ -7,7 +7,7 @@
 
 ### 0:00–0:30 Architecture overview
 - **Visual**: Show the Mermaid architecture diagram from the README.
-- **Script**: "Welcome to the ReachInbox email scheduler demo. The system architecture uses a robust React frontend and an Express Node.js backend. We use PostgreSQL as our absolute source of truth to persist email jobs, and we leverage BullMQ and Redis exclusively for distributed delayed scheduling and atomic rate limiting. We do not use any cron jobs or interval polling."
+- **Script**: "Welcome to the ReachInbox email scheduler demo. The system architecture uses a React frontend and an Express Node.js backend. We use PostgreSQL as our absolute source of truth to persist email jobs, and we leverage BullMQ and Redis exclusively for distributed delayed scheduling and atomic rate limiting. We do not use any cron jobs or interval polling."
 
 ### 0:30–1:00 Google OAuth login
 - **Visual**: Show the Login screen. Click "Login with Google", approve the consent screen, and redirect to the Dashboard.
