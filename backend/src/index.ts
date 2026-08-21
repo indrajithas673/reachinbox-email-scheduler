@@ -17,9 +17,6 @@ const app = express();
 
 app.use(express.json());
 
-// Trust the reverse proxy (Render) so secure cookies can be set over HTTPS
-app.set('trust proxy', true);
-
 // CORS configuration for specific frontend origin
 app.use(cors({
   origin: appConfig.frontendUrl,
@@ -32,17 +29,15 @@ const redisStore = new RedisStore({
   prefix: 'session:',
 });
 
-const isProd = appConfig.frontendUrl.includes('vercel') || process.env.NODE_ENV?.trim() === 'production';
-
 app.use(session({
   store: redisStore,
   secret: appConfig.sessionSecret,
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: isProd,
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    sameSite: isProd ? 'none' : 'lax',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
   }
 }));

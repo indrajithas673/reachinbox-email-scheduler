@@ -13,5 +13,5 @@ export const appConfig = {
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || 'dummy-client-secret',
   googleCallbackUrl: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:3000/api/auth/google/callback',
   sessionSecret: process.env.SESSION_SECRET || 'fallback-secret-for-dev',
-  frontendUrl: (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, ''),
+  frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
 };
