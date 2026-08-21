@@ -18,7 +18,7 @@ const app = express();
 app.use(express.json());
 
 // Trust the reverse proxy (Render) so secure cookies can be set over HTTPS
-app.set('trust proxy', 1);
+app.set('trust proxy', true);
 
 // CORS configuration for specific frontend origin
 app.use(cors({
