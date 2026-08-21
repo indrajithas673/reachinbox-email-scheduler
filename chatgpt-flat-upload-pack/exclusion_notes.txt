@@ -1,9 +1,0 @@
-# Exclusion Notes
-
-To keep the AI context window small and highly focused on the core architecture, the following types of files were intentionally excluded from this flattened pack:
-
-1. **node_modules / dist / .git**: Ignored to save space and remove generated code.
-2. **Frontend UI Components (except Compose)**: Headers, layouts, and lists (`ScheduledList.tsx`, `Dashboard.tsx`) were excluded because they are standard React state rendering and do not demonstrate complex system architecture.
-3. **SMTP Services**: `smtp.service.ts` was excluded because standard `nodemailer` usage is boilerplate and not architecturally unique compared to the rate-limiting engine.
-4. **Environment / Tests**: `.env` and `test_api.ts` were excluded to prevent leaking secrets and to focus the AI strictly on production implementation logic rather than test fixtures.
-5. **Prisma Migrations**: The raw SQL migrations were excluded since the `schema.prisma` provides a cleaner, unified view of the entity relationships.
