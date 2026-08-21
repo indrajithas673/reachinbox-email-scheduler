@@ -159,11 +159,14 @@ export const emailWorker = new Worker<EmailDeliveryPayload>(
     } catch (error: any) {
       console.error(`[Worker] SMTP delivery failed for EmailJob ${emailJobId}:`, error.message);
       
+      const maxAttempts = job.opts.attempts || 3;
+      const isFinalAttempt = job.attemptsMade >= maxAttempts - 1;
+
       // Update DB with failure reason. We keep the rate-limit slot consumed (intentional trade-off).
       await prisma.emailJob.update({
         where: { id: emailJobId },
         data: {
-          status: 'SCHEDULED',
+          status: isFinalAttempt ? 'FAILED' : 'SCHEDULED',
           failureReason: error.message
         }
       });

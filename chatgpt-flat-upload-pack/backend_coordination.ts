@@ -67,8 +67,10 @@ export class CoordinationService {
       end
 
       local newNextAllowedDelay = now + minDelayMs
-      -- Lock the delay key until the time passes. Use PSETEX for safety.
-      redis.call("PSETEX", delayKey, minDelayMs * 2, tostring(newNextAllowedDelay))
+      if minDelayMs > 0 then
+          -- Lock the delay key until the time passes. Use PSETEX for safety.
+          redis.call("PSETEX", delayKey, minDelayMs * 2, tostring(newNextAllowedDelay))
+      end
 
       return { "OK", newNextAllowedDelay }
     `;
