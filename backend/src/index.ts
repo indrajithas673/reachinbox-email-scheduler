@@ -17,6 +17,9 @@ const app = express();
 
 app.use(express.json());
 
+// Trust the reverse proxy (Railway) so secure cookies can be set over HTTPS
+app.set('trust proxy', 1);
+
 // CORS configuration for specific frontend origin
 app.use(cors({
   origin: appConfig.frontendUrl,
@@ -29,15 +32,17 @@ const redisStore = new RedisStore({
   prefix: 'session:',
 });
 
+const isProd = process.env.NODE_ENV === 'production' || appConfig.frontendUrl.includes('railway');
+
 app.use(session({
   store: redisStore,
   secret: appConfig.sessionSecret,
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: isProd,
     httpOnly: true,
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    sameSite: isProd ? 'none' : 'lax',
     maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
   }
 }));
