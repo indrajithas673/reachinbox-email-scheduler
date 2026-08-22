@@ -1,0 +1,74 @@
+services:
+  # Backend API Service
+  - type: web
+    name: reachinbox-api
+    env: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npx prisma migrate deploy && node dist/server.js
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: reachinbox-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: pserv
+          name: reachinbox-redis
+          property: connectionString
+      - key: FRONTEND_URL
+        sync: false
+      - key: NODE_ENV
+        value: production
+      - key: WORKER_CONCURRENCY
+        value: "5"
+      - key: PROCESSING_TIMEOUT_MS
+        value: "300000"
+      - key: MIN_EMAIL_DELAY_MS
+        value: "5000"
+      - key: MAX_EMAILS_PER_HOUR
+        value: "100"
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_CALLBACK_URL
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: ETHEREAL_HOST
+        value: smtp.ethereal.email
+      - key: ETHEREAL_PORT
+        value: "587"
+      - key: ETHEREAL_USER
+        sync: false
+      - key: ETHEREAL_PASSWORD
+        sync: false
+
+  # Frontend Static Site
+  - type: web
+    name: reachinbox-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://reachinbox-api.onrender.com/api/*
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+  # Redis instance for BullMQ
+  - type: pserv
+    name: reachinbox-redis
+    env: docker
+    repo: https://github.com/render-examples/redis.git
+    branch: main
+
+databases:
+  # PostgreSQL Database
+  - name: reachinbox-db
+    databaseName: reachinbox
+    user: reachinbox_user
