@@ -3,6 +3,7 @@ services:
   - type: web
     name: reachinbox-api
     env: node
+    plan: free
     rootDir: backend
     buildCommand: npm install && npm run build
     startCommand: npx prisma migrate deploy && node dist/server.js
@@ -46,6 +47,7 @@ services:
   - type: web
     name: reachinbox-frontend
     env: static
+    plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist
@@ -61,6 +63,7 @@ services:
   - type: pserv
     name: reachinbox-redis
     env: docker
+    plan: free
     repo: https://github.com/render-examples/redis.git
     branch: main
 
@@ -69,3 +72,4 @@ databases:
   - name: reachinbox-db
     databaseName: reachinbox
     user: reachinbox_user
+    plan: free
