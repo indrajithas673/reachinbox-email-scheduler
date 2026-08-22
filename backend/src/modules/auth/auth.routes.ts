@@ -51,29 +51,6 @@ router.get('/me', requireAuth, async (req, res) => {
   }
 });
 
-// Dev backdoor for automated browser recording
-router.get('/dev-login', async (req, res) => {
-  let user = await prisma.user.findFirst({ where: { email: 'dev@reachinbox.test' } });
-  if (!user) {
-    user = await prisma.user.create({ data: { email: 'dev@reachinbox.test', googleId: 'dev-id', name: 'Dev Demo User' } });
-    await prisma.sender.create({
-      data: {
-        userId: user.id,
-        senderEmail: 'reachinbox.test@ethereal.email',
-        displayName: 'Test Account',
-        etherealUsername: 'wa2drwo5batyagbe@ethereal.email',
-        etherealPassword: 'RjYrauCvX3vPcpaNm7'
-      }
-    });
-  }
-  const token = jwt.sign(
-    { id: user.id, email: user.email }, 
-    appConfig.sessionSecret, 
-    { expiresIn: '7d' }
-  );
-  res.redirect(`${appConfig.frontendUrl}/dashboard?token=${token}`);
-});
-
 // Temporary endpoint to auto-seed a test sender for the demo
 router.get('/auto-seed-sender', async (req, res) => {
   try {
