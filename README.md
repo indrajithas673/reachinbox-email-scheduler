@@ -3,13 +3,19 @@
 An email scheduling service built with Express, BullMQ, Redis, and PostgreSQL, alongside a React frontend for tracking and scheduling emails. It uses Google OAuth for authentication and Ethereal SMTP for email delivery. It handles delayed email dispatch while enforcing sender rate limits and minimum-delay requirements.
 
 ## Features
-- **Google OAuth 2.0**: Authentication using Passport.js and Google APIs.
-- **Background Processing**: Queue management via BullMQ and Redis.
-- **Rate Limiting**: Redis Lua scripts track and enforce `MAX_EMAILS_PER_HOUR` per sender.
-- **Minimum-Delay Enforcement**: Enforces a configurable `MIN_EMAIL_DELAY_MS` interval between consecutive emails for the same sender.
-- **Auto-Rescheduling**: Pushes emails to the next UTC hour when hourly rate limits are reached.
-- **Crash Recovery**: Database state tracking (SCHEDULED → PROCESSING → SENT/FAILED) prevents dropped emails.
-- **Frontend Dashboard**: A React UI to schedule emails via CSV, manage senders, and monitor the queue.
+
+### Backend
+- **Scheduler**: Queue management via BullMQ and Redis for delayed dispatch.
+- **Persistence**: Database state tracking (SCHEDULED → PROCESSING → SENT/FAILED) prevents dropped emails. Reclaims interrupted jobs on restart.
+- **Rate Limiting**: Redis Lua scripts track and enforce `MAX_EMAILS_PER_HOUR` per sender. Pushes overflow emails to the next hour.
+- **Concurrency**: Minimum-delay enforcement (PSETEX) and atomic PostgreSQL row locks safely handle parallel worker processing.
+- **Authentication**: Google OAuth 2.0 via Passport.js.
+
+### Frontend
+- **Login**: Google OAuth integration.
+- **Dashboard**: High-level metrics and queue status tracking.
+- **Compose**: UI to schedule emails and upload CSVs for batch sending.
+- **Tables**: Data tables for monitoring scheduled, processing, sent, and failed emails.
 
 ## Tech Stack
 - **Backend**: Node.js, Express, TypeScript, Prisma ORM
