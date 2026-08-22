@@ -17,10 +17,27 @@ router.get(
 router.get(
   '/google/callback',
   passport.authenticate('google', { failureRedirect: `${appConfig.frontendUrl}/login?error=auth_failed` }),
-  (req, res) => {
+  async (req, res) => {
+    // Auto-inject a test sender for the demo if they don't have one
+    const user = req.user as any;
+    if (user && user.id) {
+      const existingSender = await prisma.sender.findFirst({ where: { userId: user.id } });
+      if (!existingSender) {
+        await prisma.sender.create({
+          data: {
+            userId: user.id,
+            senderEmail: 'reachinbox.test@ethereal.email',
+            displayName: 'Test Account',
+            etherealUsername: 'wa2drwo5batyagbe@ethereal.email',
+            etherealPassword: 'RjYrauCvX3vPcpaNm7'
+          }
+        });
+      }
+    }
+
     // Generate JWT token for cross-domain authentication to bypass browser cookie blocking
     const token = jwt.sign(
-      { id: (req.user as any).id, email: (req.user as any).email }, 
+      { id: user.id, email: user.email }, 
       appConfig.sessionSecret, 
       { expiresIn: '7d' }
     );
