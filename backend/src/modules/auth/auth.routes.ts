@@ -51,6 +51,29 @@ router.get('/me', requireAuth, async (req, res) => {
   }
 });
 
+// Temporary endpoint to auto-seed a test sender for the demo
+router.get('/auto-seed-sender', requireAuth, async (req, res) => {
+  try {
+    const existing = await prisma.emailSender.findFirst({ where: { userId: (req as any).user.id } });
+    if (!existing) {
+      await prisma.emailSender.create({
+        data: {
+          userId: (req as any).user.id,
+          email: 'reachinbox.test@ethereal.email',
+          provider: 'smtp',
+          smtpHost: 'smtp.ethereal.email',
+          smtpPort: 587,
+          smtpUser: 'wa2drwo5batyagbe@ethereal.email',
+          smtpPass: 'RjYrauCvX3vPcpaNm7'
+        }
+      });
+    }
+    res.json({ success: true, message: 'Test sender added successfully! Please refresh your Compose page.' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to seed sender' });
+  }
+});
+
 // Logout
 router.post('/logout', requireAuth, (req, res, next) => {
   req.logout((err) => {
