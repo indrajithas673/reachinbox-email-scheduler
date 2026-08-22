@@ -52,13 +52,16 @@ router.get('/me', requireAuth, async (req, res) => {
 });
 
 // Temporary endpoint to auto-seed a test sender for the demo
-router.get('/auto-seed-sender', requireAuth, async (req, res) => {
+router.get('/auto-seed-sender', async (req, res) => {
   try {
-    const existing = await prisma.emailSender.findFirst({ where: { userId: (req as any).user.id } });
+    const user = await prisma.user.findFirst({ orderBy: { createdAt: 'desc' } });
+    if (!user) return res.status(404).json({ error: 'No user found' });
+
+    const existing = await prisma.emailSender.findFirst({ where: { userId: user.id } });
     if (!existing) {
       await prisma.emailSender.create({
         data: {
-          userId: (req as any).user.id,
+          userId: user.id,
           email: 'reachinbox.test@ethereal.email',
           provider: 'smtp',
           smtpHost: 'smtp.ethereal.email',
@@ -68,7 +71,7 @@ router.get('/auto-seed-sender', requireAuth, async (req, res) => {
         }
       });
     }
-    res.json({ success: true, message: 'Test sender added successfully! Please refresh your Compose page.' });
+    res.json({ success: true, message: 'Test sender added successfully! You can now close this tab and refresh your Compose page.' });
   } catch (error) {
     res.status(500).json({ error: 'Failed to seed sender' });
   }
