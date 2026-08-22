@@ -206,13 +206,34 @@ export default function ComposePage() {
             <span className="w-16 text-gray-400 text-sm mt-1.5">To</span>
             <div className="flex-1 flex flex-col">
               <div className="flex flex-wrap gap-2 min-h-[36px] items-center">
-                {recipients.length === 0 && <span className="text-gray-400 text-sm py-1">recipient@example.com</span>}
                 {recipients.map(email => (
                   <div key={email} className="flex items-center bg-[#E2F1DF] text-gray-800 text-xs px-2.5 py-1 rounded-full border border-[#D5E9D1]">
                     <span>{email}</span>
                     <button onClick={() => removeRecipient(email)} className="ml-1.5 text-gray-500 hover:text-gray-800"><X className="w-3 h-3" /></button>
                   </div>
                 ))}
+                <input
+                  type="email"
+                  placeholder={recipients.length === 0 ? "recipient@example.com" : "Add another..."}
+                  className="flex-1 min-w-[150px] outline-none text-sm text-gray-900 bg-transparent placeholder:text-gray-400 py-1"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ',' || e.key === ' ') {
+                      e.preventDefault();
+                      const val = e.currentTarget.value.trim().replace(',', '');
+                      if (val && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) && !recipients.includes(val)) {
+                        setRecipients([...recipients, val]);
+                        e.currentTarget.value = '';
+                      }
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const val = e.currentTarget.value.trim().replace(',', '');
+                    if (val && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) && !recipients.includes(val)) {
+                      setRecipients([...recipients, val]);
+                      e.currentTarget.value = '';
+                    }
+                  }}
+                />
               </div>
               {csvError && <span className="text-xs text-red-500 mt-1">{csvError}</span>}
               {recipients.length > 0 && <span className="text-xs text-[#28A745] mt-1 font-medium">Detected {recipients.length} unique email(s)</span>}
