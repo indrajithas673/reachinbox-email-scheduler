@@ -20,10 +20,8 @@ export default function ComposePage() {
   const [delayMs, setDelayMs] = useState(5000);
   const [hourlyLimit, setHourlyLimit] = useState(100);
   const [scheduleDate, setScheduleDate] = useState(() => {
-    // Default to tomorrow 10am or similar for the UI picker
+    // Default to right now so delays apply immediately
     const d = new Date();
-    d.setHours(10, 0, 0, 0);
-    if (d < new Date()) d.setDate(d.getDate() + 1);
     // Format for datetime-local input YYYY-MM-DDThh:mm
     return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
   });
