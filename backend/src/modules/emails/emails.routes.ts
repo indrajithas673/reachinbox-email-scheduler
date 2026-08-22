@@ -13,7 +13,7 @@ const scheduleSchema = z.object({
   body: z.string().min(1).max(10000),
   recipients: z.array(z.string().email()).min(1),
   startTime: z.string().refine((val) => !isNaN(Date.parse(val)), { message: "Invalid ISO timestamp" }),
-  delayMs: z.number().int().nonnegative().min(appConfig.minEmailDelayMs),
+  delayMs: z.number().int().nonnegative().min(0),
   hourlyLimit: z.number().int().positive().max(appConfig.maxEmailsPerHour),
   senderId: z.string().uuid(),
 });
