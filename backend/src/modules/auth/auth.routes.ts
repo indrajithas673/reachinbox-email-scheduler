@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import passport from 'passport';
+import jwt from 'jsonwebtoken';
 import { requireAuth } from '../../middlewares/auth.middleware';
 import prisma from '../../database/prisma';
 import { appConfig } from '../../config/app';
@@ -17,8 +18,13 @@ router.get(
   '/google/callback',
   passport.authenticate('google', { failureRedirect: `${appConfig.frontendUrl}/login?error=auth_failed` }),
   (req, res) => {
-    // Successful authentication, redirect to dashboard.
-    res.redirect(`${appConfig.frontendUrl}/dashboard`);
+    // Generate JWT token for cross-domain authentication to bypass browser cookie blocking
+    const token = jwt.sign(
+      { id: (req.user as any).id, email: (req.user as any).email }, 
+      appConfig.sessionSecret, 
+      { expiresIn: '7d' }
+    );
+    res.redirect(`${appConfig.frontendUrl}/dashboard?token=${token}`);
   }
 );
 

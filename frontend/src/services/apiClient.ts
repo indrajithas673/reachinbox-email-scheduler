@@ -9,7 +9,7 @@ export class ApiError extends Error {
   }
 }
 
-const API_BASE = '/api';
+const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
 
 export async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = `${API_BASE}${endpoint}`;
@@ -17,6 +17,11 @@ export async function fetchApi<T>(endpoint: string, options?: RequestInit): Prom
   const headers = new Headers(options?.headers);
   if (!headers.has('Content-Type') && !(options?.body instanceof FormData)) {
     headers.set('Content-Type', 'application/json');
+  }
+
+  const token = localStorage.getItem('auth_token');
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
   }
 
   // Specifically overwrite credentials since we strictly need 'include'

@@ -18,6 +18,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<'loading' | 'authenticated' | 'unauthenticated'>('loading');
 
   useEffect(() => {
+    // Check for token in URL after OAuth redirect
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    if (token) {
+      localStorage.setItem('auth_token', token);
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
     checkAuth();
   }, []);
 
@@ -39,6 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
+      localStorage.removeItem('auth_token');
       await fetchApi('/auth/logout', { method: 'POST' });
     } catch (err) {
       console.error('Logout error', err);
