@@ -61,6 +61,18 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   res.status(500).json({ error: 'Internal Server Error' });
 });
 
+// Debug Endpoint
+app.get('/api/debug', (req, res) => {
+  res.json({
+    isProd,
+    trustProxy: app.get('trust proxy'),
+    protocol: req.protocol,
+    secure: req.secure,
+    frontendUrl: appConfig.frontendUrl,
+    sessionCookie: req.session.cookie
+  });
+});
+
 // Startup Recovery Mechanism
 async function recoverPendingPublications() {
   try {
