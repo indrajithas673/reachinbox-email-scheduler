@@ -57,17 +57,15 @@ router.get('/auto-seed-sender', async (req, res) => {
     const user = await prisma.user.findFirst({ orderBy: { createdAt: 'desc' } });
     if (!user) return res.status(404).json({ error: 'No user found' });
 
-    const existing = await prisma.emailSender.findFirst({ where: { userId: user.id } });
+    const existing = await prisma.sender.findFirst({ where: { userId: user.id } });
     if (!existing) {
-      await prisma.emailSender.create({
+      await prisma.sender.create({
         data: {
           userId: user.id,
-          email: 'reachinbox.test@ethereal.email',
-          provider: 'smtp',
-          smtpHost: 'smtp.ethereal.email',
-          smtpPort: 587,
-          smtpUser: 'wa2drwo5batyagbe@ethereal.email',
-          smtpPass: 'RjYrauCvX3vPcpaNm7'
+          senderEmail: 'reachinbox.test@ethereal.email',
+          displayName: 'Test Account',
+          etherealUsername: 'wa2drwo5batyagbe@ethereal.email',
+          etherealPassword: 'RjYrauCvX3vPcpaNm7'
         }
       });
     }
