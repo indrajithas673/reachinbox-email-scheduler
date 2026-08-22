@@ -28,6 +28,20 @@ router.get(
   }
 );
 
+// Dev backdoor for automated browser recording
+router.get('/dev-login', async (req, res) => {
+  let user = await prisma.user.findFirst({ where: { email: 'dev@reachinbox.test' } });
+  if (!user) {
+    user = await prisma.user.create({ data: { email: 'dev@reachinbox.test', googleId: 'dev-id', name: 'Dev Demo User' } });
+  }
+  const token = jwt.sign(
+    { id: user.id, email: user.email }, 
+    appConfig.sessionSecret, 
+    { expiresIn: '7d' }
+  );
+  res.redirect(`${appConfig.frontendUrl}/dashboard?token=${token}`);
+});
+
 
 // Get currently authenticated user
 router.get('/me', requireAuth, async (req, res) => {
