@@ -12,10 +12,7 @@ services:
           name: reachinbox-db
           property: connectionString
       - key: REDIS_URL
-        fromService:
-          type: pserv
-          name: reachinbox-redis
-          property: connectionString
+        value: redis://reachinbox-redis:6379
       - key: FRONTEND_URL
         sync: false
       - key: NODE_ENV
