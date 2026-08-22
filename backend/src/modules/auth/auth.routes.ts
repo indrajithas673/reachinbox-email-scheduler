@@ -33,6 +33,17 @@ router.get('/dev-login', async (req, res) => {
   let user = await prisma.user.findFirst({ where: { email: 'dev@reachinbox.test' } });
   if (!user) {
     user = await prisma.user.create({ data: { email: 'dev@reachinbox.test', googleId: 'dev-id', name: 'Dev Demo User' } });
+    await prisma.emailSender.create({
+      data: {
+        userId: user.id,
+        email: 'reachinbox.test@ethereal.email',
+        provider: 'smtp',
+        smtpHost: 'smtp.ethereal.email',
+        smtpPort: 587,
+        smtpUser: 'wa2drwo5batyagbe@ethereal.email',
+        smtpPass: 'RjYrauCvX3vPcpaNm7'
+      }
+    });
   }
   const token = jwt.sign(
     { id: user.id, email: user.email }, 
