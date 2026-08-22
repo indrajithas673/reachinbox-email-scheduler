@@ -23,6 +23,7 @@ An email scheduling service built with Express, BullMQ, Redis, and PostgreSQL, a
 - **Database**: PostgreSQL
 - **Queues & Coordination**: Redis, BullMQ
 - **Email Dispatch**: Nodemailer, Ethereal SMTP
+- **Deployment**: Railway (Live)
 
 ## Project Structure
 ```text
@@ -130,7 +131,8 @@ npx tsx src/tests/test_api.ts
 ```
 
 ## Assignment Requirement Mapping
-- **Google OAuth Only**: Enforced via Passport.js; no standard password login is implemented.
+- **Google OAuth Only**: Enforced via Passport.js.
+- **Cross-Domain JWT Authentication**: Specifically implemented a custom JSON Web Token (JWT) flow passing tokens directly to Local Storage to completely bypass modern browser (Chrome/Safari) third-party cookie blocking when hosting the Frontend and Backend on separate Railway domains.
 - **Queue/Redis Approach**: Uses BullMQ for queue management.
 - **Hourly Rate Limit**: Enforced via a custom Redis Lua script (`coordination.service.ts`).
 - **Minimum Delay**: PSETEX spacing enforced via Lua.
@@ -142,5 +144,7 @@ npx tsx src/tests/test_api.ts
 - **Ethereal Delivery**: Actual delivery depends on Ethereal's uptime. Nodemailer is used instead of a specific provider SDK to make testing easier.
 - **Rate Limit Queueing**: Instead of rejecting API requests when limits are hit, the system accepts them and schedules them for the next available UTC hour.
 
-## Demo
-Please refer to the submission link for the screen recording demonstrating the dashboard, rate limiting, and job transitions.
+## Demo & Live Links
+- **Frontend Live URL:** https://easygoing-eagerness-production-bbbb.up.railway.app
+- **Backend Live API:** https://reachinbox-email-scheduler-production-3d01.up.railway.app
+- Please refer to the assignment submission link for the screen recording demonstrating the dashboard, rate limiting, and job transitions.
